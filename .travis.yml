@@ -22,7 +22,7 @@ before_install:
   - sudo apt-get update
   - npm config set strict-ssl=false
   - npm config set registry https://time-machines-npm-direct-download.sealsecurity.io
-  - npm i -g npm@latest
+  - npm i -g npm@4.1.2 #npm i -g npm@latest
 script:
   - npm test
 after_success:
