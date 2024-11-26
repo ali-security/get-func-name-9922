@@ -30,14 +30,21 @@ describe('getFuncName', function () {
   it('should return an empty string for overly large function names', function () {
     // eslint-disable-next-line max-len, func-style, func-name-matching, id-length
     var longFunc = function aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa() {};
-    Object.defineProperty(longFunc, 'name', { value: undefined });
-    // Temporarily disable the Function.prototype.name getter
+    var nameDescriptorF = Object.getOwnPropertyDescriptor(longFunc, 'name');
+    if (nameDescriptorF && nameDescriptorF.configurable) {
+      Object.defineProperty(longFunc, 'name', { value: undefined });
+    }
     var realFPName = Object.getOwnPropertyDescriptor(Function.prototype, 'name');
-    // eslint-disable-next-line no-extend-native
-    Object.defineProperty(Function.prototype, 'name', { value: undefined });
+    var nameDescriptorFP = Object.getOwnPropertyDescriptor(Function.prototype, 'name');
+    if (nameDescriptorFP && nameDescriptorFP.configurable) {
+      // eslint-disable-next-line no-extend-native
+      Object.defineProperty(Function.prototype, 'name', { value: undefined });
+    }
     assert(getFuncName(longFunc) === '');
-    // eslint-disable-next-line no-extend-native
-    Object.defineProperty(Function.prototype, 'name', realFPName);
+    if (nameDescriptorFP && nameDescriptorFP.configurable) {
+      // eslint-disable-next-line no-extend-native
+      Object.defineProperty(Function.prototype, 'name', realFPName);
+    }
   });
 
   it('should return `null` when passed a String as argument', function () {

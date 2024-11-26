@@ -28,7 +28,13 @@ function getFuncName(aFunc) {
   }
 
   var name = '';
-  if (typeof Function.prototype.name === 'undefined' && typeof aFunc.name === 'undefined') {
+  var realFPName = Object.getOwnPropertyDescriptor(Function.prototype, 'name');
+  var realFName = Object.getOwnPropertyDescriptor(aFunc, 'name');
+  // eslint-disable-next-line no-console
+  console.log(realFPName.configurable);
+  // eslint-disable-next-line no-console
+  console.log(realFName.configurable);
+  if ((!realFPName || !realFPName.configurable) && (typeof aFunc.name === 'undefined' || !realFName.configurable)) {
     // Here we run a polyfill if Function does not support the `name` property and if aFunc.name is not defined
     var functionSource = toString.call(aFunc);
     if (functionSource.indexOf('(') > maxFunctionSourceLength) {
