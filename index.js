@@ -26,7 +26,6 @@ function getFuncName(aFunc) {
   if (typeof aFunc !== 'function') {
     return null;
   }
-
   var name = '';
   var realFPName = Object.getOwnPropertyDescriptor(Function.prototype, 'name');
   var realFName = Object.getOwnPropertyDescriptor(aFunc, 'name');
@@ -34,9 +33,24 @@ function getFuncName(aFunc) {
   console.log(realFPName.configurable);
   // eslint-disable-next-line no-console
   console.log(realFName.configurable);
-  if ((!realFPName || !realFPName.configurable) && (typeof aFunc.name === 'undefined' || !realFName.configurable)) {
+  // eslint-disable-next-line no-console
+  console.log(realFPName.name);
+  // eslint-disable-next-line no-console
+  console.log(realFName.name);
+  // eslint-disable-next-line no-console,max-len
+  console.log(((typeof realFPName.name === 'undefined' || !realFPName.configurable)));
+  // eslint-disable-next-line no-console,max-len
+  console.log((typeof aFunc.name === 'undefined' || !realFName.configurable));
+  // eslint-disable-next-line no-console,max-len
+  console.log(((typeof realFPName.name === 'undefined' || !realFPName.configurable) && (typeof aFunc.name === 'undefined' || !realFName.configurable)));
+  if ((typeof realFPName.name === 'undefined' || !realFPName.configurable) &&
+      (typeof aFunc.name === 'undefined' || !realFName.configurable)) {
     // Here we run a polyfill if Function does not support the `name` property and if aFunc.name is not defined
     var functionSource = toString.call(aFunc);
+    // eslint-disable-next-line no-console,max-len
+    console.log(functionSource.indexOf('('));
+    // eslint-disable-next-line no-console,max-len
+    console.log(name);
     if (functionSource.indexOf('(') > maxFunctionSourceLength) {
       return name;
     }
